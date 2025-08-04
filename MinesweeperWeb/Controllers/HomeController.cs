@@ -1,32 +1,48 @@
-using Microsoft.AspNetCore.Mvc;
-using MinesweeperWeb.Models;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
+using Minesweeper.BLL.Services.Interface;
+using MinesweeperWeb.ViewModels;
 
 namespace MinesweeperWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IGameService _gameService;
+        private readonly IGameResultService _gameResultService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IGameResultService gameResultService, IGameService gameService)
         {
-            _logger = logger;
+            _gameResultService = gameResultService;
+            _gameService = gameService;
         }
 
+        public async Task<IActionResult> Rating()
+        {
+            var topResults = await _gameResultService.GetTopResultsAsync(10);
+
+            var model = topResults.Select(r => new GameResultViewModel
+            {
+                PlayerName = r.PlayerName,
+                TimeTaken = r.TimeTaken,
+                IsWin = r.IsWin,
+                DatePlayed = r.DatePlayed
+            }).ToList();
+
+            return View(model);
+        }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        public async Task<IActionResult> Start(string playerName = "Player")
         {
-            return View();
+            var fieldDto = await _gameService.CreateGameAsync(10, 10, 10, playerName);
+            return View("Game", fieldDto);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+
+
     }
+
 }

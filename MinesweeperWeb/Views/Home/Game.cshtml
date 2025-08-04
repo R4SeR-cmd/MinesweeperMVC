@@ -1,0 +1,40 @@
+﻿@model Minesweeper.BLL.DTO_s.FieldDto
+
+@{
+	ViewData["Title"] = "Гра";
+}
+
+<h1>Гра Minesweeper</h1>
+
+<p>Розмір поля: @Model.Width x @Model.Height</p>
+
+<table class="table table-bordered">
+	@for (int y = 0; y < Model.Height; y++)
+	{
+		<tr>
+			@for (int x = 0; x < Model.Width; x++)
+			{
+				var cell = Model.Cells[x][y];
+				<td style="width:30px; height:30px; text-align:center; vertical-align:middle; cursor:pointer; background-color:@(cell.IsOpened ? "#ddd" : "#999")">
+					@if (cell.IsOpened)
+					{
+						@if (cell.IsMine)
+						{
+							<text>💣</text>
+						}
+						else if (cell.AdjacentMines > 0)
+						{
+							@cell.AdjacentMines
+						}
+					}
+					else if (cell.IsFlagged)
+					{
+						<text>🚩</text>
+					}
+				</td>
+			}
+		</tr>
+	}
+</table>
+
+<a class="btn btn-secondary" href="/">На головну</a>

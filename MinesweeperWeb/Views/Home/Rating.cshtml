@@ -1,0 +1,28 @@
+﻿@model List<MinesweeperWeb.ViewModels.GameResultViewModel>
+@{
+	ViewData["Title"] = "Top Players";
+}
+
+<h2>🏆 Рейтинг гравців</h2>
+
+<table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+		<th>Гравець</th>
+		<th>Час</th>
+		<th>Перемога</th>
+		<th>Дата</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var result in Model)
+	{
+		<tr>
+			<td>@result.PlayerName</td>
+			<td>@result.TimeTaken</td>
+			<td>@(result.IsWin ? "✅" : "❌")</td>
+			<td>@result.DatePlayed.ToLocalTime().ToString("g")</td>
+		</tr>
+	}
+	</tbody>
+</table>
